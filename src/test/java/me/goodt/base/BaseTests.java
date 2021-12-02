@@ -45,6 +45,7 @@ public class BaseTests {
     }
     @AfterClass(alwaysRun = true)
     public void tearDown() {
+      //  driver.manage().deleteAllCookies();
         driver.quit();
     }
 

@@ -3,7 +3,6 @@ package me.goodt.tests;
 import me.goodt.base.BaseTests;
 import me.goodt.utils.LANG;
 import org.testng.annotations.Test;
-import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -14,7 +13,7 @@ public class YandexMailTests extends BaseTests {
 
     @Test(description = "Switch language to English")
     public void testYA_1_1(){
-        assertTrue(mainPage.ifCurrentItemIsInbox(LANG.Russian));
+        assertTrue(mainPage.ifCurrentItemIsInbox());
         mainPage.clickOnSettings();
         assertTrue(mainPage.isSettingsPopupVisible(),
                 "Settings popup is not visible");
@@ -29,7 +28,7 @@ public class YandexMailTests extends BaseTests {
 
     @Test (description = "Switch language to Russian")
     public void testYA_1_2(){
-        assertTrue(mainPage.ifCurrentItemIsInbox(LANG.English));
+        assertTrue(mainPage.ifCurrentItemIsInbox());
         mainPage.clickOnSettings();
         assertTrue(mainPage.isSettingsPopupVisible(),
                 "Settings popup is not visible");
@@ -81,9 +80,10 @@ public class YandexMailTests extends BaseTests {
         assertTrue(mainPage.isComposeEmailPresent());
         mainPage.sendEmail();
         assertTrue(mainPage.isPopupPresentEmailNotSent());
-        assertTrue(mainPage.isComposeEmailPresent());
         assertEquals(mainPage.getPopupDescription(),"Пожалуйста, укажите адрес получателя");
         mainPage.closePopup();
+        assertTrue(mainPage.isComposeEmailPresent());
+        mainPage.closeDraft();
     }
     @Test (description = "Check mail is not sent without addressee")
     public void testYA_6_2(){
@@ -94,9 +94,10 @@ public class YandexMailTests extends BaseTests {
         assertTrue(mainPage.isSubjectEntered(subject));
         mainPage.sendEmail();
         assertTrue(mainPage.isPopupPresentEmailNotSent());
-        assertTrue(mainPage.isComposeEmailPresent());
         assertEquals(mainPage.getPopupDescription(),"Пожалуйста, укажите адрес получателя");
         mainPage.closePopup();
+        assertTrue(mainPage.isComposeEmailPresent());
+        mainPage.closeDraft();
     }
     @Test(description = "Check mail is sent without subject")
     public void testYA_6_3(){
@@ -110,6 +111,7 @@ public class YandexMailTests extends BaseTests {
         mainPage.clickSendWithoutSubjectButton();
         mainPage.closePopup();
         assertTrue(mainPage.isEmailSent());
+        mainPage.closeDraft();
     }
 
 }

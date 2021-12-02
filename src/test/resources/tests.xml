@@ -3,8 +3,8 @@
 <suite name="Goodt Tests">
     <test name="Yandex Tests">
         <classes>
-            <class name="me.goodt.tests.YandexMailTests"> </class>
-            <class name="me.goodt.tests.SendInvalidEmailTestFactory"> </class>
+           <class name="me.goodt.tests.YandexMailTests"> </class>
+           <class name="me.goodt.tests.SendInvalidEmailTestFactory"> </class>
         </classes>
     </test> <!-- configuration annotation Test -->
 </suite> <!-- Test Automation University Suite -->

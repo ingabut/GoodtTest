@@ -111,7 +111,8 @@ public class MainPage extends AbstractPage {
     @FindBy(css = ".ComposeConfirmPopup-Title")
     private List<WebElement> confirmPopupElements;
 
-    //$$("input._nb-checkbox-input")[0].checked
+    @FindBy(xpath="//div[contains(@role,'textbox')]")
+    private WebElement textboxElement;
 
     private List <String> inboxNames = Arrays.asList("Входящие","Inbox");
     private String redColor = "rgba(255, 0, 0, 0.2)";
@@ -123,13 +124,6 @@ public class MainPage extends AbstractPage {
         PageFactory.initElements(driver, this);
     }
 
-    public List<String> getLanguages(){
-        List<WebElement> languages = getDriver().findElements(By.cssSelector(".b-mail-dropdown__item__content"));
-        return languages.stream().map(e->e.getText().trim()).collect(Collectors.toList());
-    }
-    public List<WebElement> getLangElements(){
-        return getDriver().findElements(By.cssSelector(".b-mail-dropdown__item__content"));
-    }
     public void clickOnSettings() {
         settingsButton.click();
     }
@@ -166,17 +160,11 @@ public class MainPage extends AbstractPage {
         return getDriver().getTitle();
     }
 
-    public boolean ifCurrentItemIsInbox(LANG lang) {
-        if (lang == LANG.Russian && currentItem.getAttribute("title").equals("Входящие"))
-            return true;
-        else if (lang == LANG.English && currentItem.getAttribute("title").equals("Inbox"))
-            return true;
-        return false;
-    }
     public boolean ifCurrentItemIsInbox() {
-        if (inboxNames.contains(currentItem.getAttribute("title"))) {
+        if (currentItem.getAttribute("title").equals("Входящие"))
             return true;
-        }
+        else if (currentItem.getAttribute("title").equals("Inbox"))
+            return true;
         return false;
     }
     public boolean isDeleteEmailButtonDisabled() {
@@ -184,7 +172,7 @@ public class MainPage extends AbstractPage {
     }
     public void deleteEmail() {
         deleteEmailButton.click();
-
+        log.debug("Email was deleted");
     }
     public boolean toggleOnRandomEmail() {
         if (emailCheckboxes.size() == 0) return false;
@@ -204,22 +192,22 @@ public class MainPage extends AbstractPage {
 
     public void clickComposeButton() {
         composeButton.click();
+        log.debug("Compose button was clicked");
     }
     public boolean isComposeEmailPresent() {
         return isElementPresent(composePopup, 1);
     }
     public void enterAddressee(String addressee) {
         addresseeElements.get(0).sendKeys(addressee);
-        new Actions(getDriver()).moveToElement(composeButton).click().perform();
-    }
-    public boolean isAddresseeEntered(String addressee) {
-        return isElementPresent(getDriver().findElements(By.xpath("//div[contains(text(),'"+addressee+"')]")));
+        new Actions(getDriver()).moveToElement(textboxElement).click().perform();
+        log.debug("Moved cursor to text box");
     }
     public String getInvalidEmailEntered() {
         if (isElementPresent(invalidEmailElements)) {
             for (WebElement e:invalidEmailElements) {
                 List <WebElement> invalidEmails = e.findElements(By.xpath("./div[contains(@class, 'ComposeYabble-Text')]"));
                 if (invalidEmails.size()>0) {
+
                     return invalidEmails.get(0).getText();
                 }
             }
@@ -236,15 +224,17 @@ public class MainPage extends AbstractPage {
     public void enterSubject(String subject) {
         subjectElement.sendKeys(subject);
         subjectElement.sendKeys(Keys.ENTER);
+        log.debug("Subject entered: "+subject);
     }
     public boolean isSubjectEntered(String subject) {
-        System.out.println(((JavascriptExecutor) getDriver()).executeScript("return $('input[name=subject]').val();"));
         if (((JavascriptExecutor) getDriver()).executeScript("return $('input[name=subject]').val();").equals(subject))
             return true;
         else return false;
     }
     public void sendEmail() {
+
         emailSendButton.click();
+        log.debug("Email successfully sent");
     }
     public boolean isEmailSent() {
         return isElementPresent(composeDoneElements);
@@ -256,6 +246,7 @@ public class MainPage extends AbstractPage {
         return popupTitle.getText();
     }
     public String getPopupDescription() {
+        log.info("popup description: "+popupDescription.getText());
         return popupDescription.getText();
     }
     public void clickSendWithoutSubjectButton() {
@@ -265,6 +256,7 @@ public class MainPage extends AbstractPage {
         if (isElementPresent(closePopupButtons)) {
             for (WebElement e:closePopupButtons) {
                 e.click();
+                log.debug("Popup successfully closed");
             }
         }
     }
@@ -275,6 +267,17 @@ public class MainPage extends AbstractPage {
             if (e.getCssValue("background-color").toString().equals(redColor))
                 return true;
         return false;
+    }
+    public void closeDraft() {
+        if (isElementPresent(closeComposeEmailButtons)) {
+        //    for (WebElement e:closeComposeEmailButtons) {
+                    WebElement e = closeComposeEmailButtons.get(0);
+                    if (e.isDisplayed()) {
+                        e.click();
+                        log.debug("Draft successfully closed");
+                    }
+        //    }
+        }
     }
 
 }

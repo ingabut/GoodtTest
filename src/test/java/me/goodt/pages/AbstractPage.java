@@ -4,6 +4,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.testng.log4testng.Logger;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -11,7 +13,7 @@ import java.util.NoSuchElementException;
 public class AbstractPage {
     private final WebDriver driver;
     protected final int timeout = 4;
-
+    protected Logger log = Logger.getLogger(this.getClass());
     public AbstractPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -23,7 +25,7 @@ public class AbstractPage {
     public void waitForCondition(ExpectedCondition condition, int timeout) {
         Wait wait = new FluentWait(getDriver())
                 .withTimeout(Duration.ofSeconds(timeout))
-                .ignoring(TimeoutException.class)
+                .ignoring(Exception.class)
                 .ignoring(NoSuchElementException.class);
         wait.until(condition);
     }
